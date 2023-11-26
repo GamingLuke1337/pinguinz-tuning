@@ -111,5 +111,6 @@
 	"society_payment_success": "%s $ retirés du compte de votre entreprise",
 	"cash_payment_success": "%s $ retirés de votre portefeuille",
 	"bank_payment_success": "%s $ retirés de votre compte bancaire",
-	"confirm_payment_dialog_title": "Confirmation de paiement"
+	"confirm_payment_dialog_title": "Confirmation de paiement",
+	"access_workshop_msg": "[E] - Pour accéder à l'atelier"
 }
