@@ -5,7 +5,7 @@
 	"turbo_disabled": "Désactivé",
 
 	"upgrade_category_title": "Améliorations",
-	"description_upgrades": "Maximisez cela",
+	"description_upgrades": "Amélioration des performances",
 
 	"engine_title": "Moteur",
 	"brakes_title": "Freins",
@@ -68,8 +68,8 @@
 
 	"body_parts_title": "Pièces de carrosserie",
 	"spoiler_title": "Ailerons",
-	"front_bumper_title": "Boucliers avant",
-	"rear_bumper_title": "Boucliers arrière",
+	"front_bumper_title": "Pare-choc avant",
+	"rear_bumper_title": "Pare-choc arrière",
 	"side_skirt_title": "Jupe latérale",
 	"exhaust_title": "Échappement",
 	"cage_title": "Cage",

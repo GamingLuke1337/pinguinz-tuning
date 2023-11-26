@@ -25,7 +25,7 @@ function CreateCustomLocations()
             distance = 8,
             onEnter = function(self)
                 if cache.vehicle and hasAccess(cfg.job) then
-                    lib.showTextUI("[E] - Accéder à l'atelier")
+                    lib.showTextUI(locale("access_workshop_msg"))
                 end
             end,
             onExit = function(self)
@@ -38,13 +38,13 @@ function CreateCustomLocations()
                     if self.currentDistance < 8.0 and IsControlJustReleased(0, 38) then
                         local vehicle = cache.vehicle
                         currentVehProperties.old = getVehicleProperties(vehicle)
-    
+                        
                         local color1_r, color1_g, color1_b = GetVehicleCustomPrimaryColour(vehicle)
                         currentVehProperties.old.color1 = { color1_r, color1_g, color1_b }
     
                         local color2_r, color2_g, color2_b = GetVehicleCustomSecondaryColour(vehicle)
                         currentVehProperties.old.color2 = { color2_r, color2_g, color2_b }
-    
+                        SetVehicleEngineOn(vehicle, false, true, true)
                         openTuningMenu()
                     end
                 end
