@@ -2314,15 +2314,15 @@ function openTuningMenu()
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
                 end,
             },
-            {
-                title = "Camera",
-                description = "Changer de point de vue",
-                icon = 'video',
-                onSelect = function()
-                    openCameraMenu()
-                    playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
-                end,
-            },
+            -- {
+            --     title = "Camera",
+            --     description = "Changer de point de vue",
+            --     icon = 'video',
+            --     onSelect = function()
+            --         openCameraMenu()
+            --         playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
+            --     end,
+            -- },
         }
     })
 	-- Setting the player cam position
