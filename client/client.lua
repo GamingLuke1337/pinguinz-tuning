@@ -30,7 +30,7 @@ function CreateCustomLocations()
             end,
             onExit = function(self)
                 lib.hideTextUI()
-            end,
+                end,
             nearby = function(self)
                 if cache.vehicle and hasAccess(cfg.job) then
                     DrawMarker(36, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, cfg.marker.scale.x, cfg.marker.scale.y, cfg.marker.scale.z,

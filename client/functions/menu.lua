@@ -224,6 +224,57 @@ local function openTurboMenu()
     lib.showContext('turboMenu')
 end
 
+local function openCameraMenu()
+    local vehicle = cache.vehicle
+
+    lib.registerContext({
+        id = 'cameraMenu',
+        menu = "tuningMenu",
+        title = "Camera",
+        onExit = onExit,
+        options = {
+            {
+                title = "Avant",
+                icon = "circle-arrow-up",
+                disabled = enabled,
+                onSelect = function()
+                    toggleCam("front", vehicle)
+                    openCameraMenu()
+                end
+            },
+            {
+                title = "Arrière",
+                icon = "circle-arrow-down",
+                disabled = enabled,
+                onSelect = function()
+                    toggleCam("behind", vehicle)
+                    openCameraMenu()
+                end
+            },
+            {
+                title = "Gauche",
+                icon = "circle-arrow-left",
+                disabled = enabled,
+                onSelect = function()
+                    toggleCam("left", vehicle)
+                    openCameraMenu()
+                end
+            },
+            {
+                title = "Droite",
+                icon = "circle-arrow-right",
+                disabled = enabled,
+                onSelect = function()
+                    toggleCam("right", vehicle)
+                    openCameraMenu()
+                end
+            },
+        }
+    })
+
+    lib.showContext('cameraMenu')
+end
+
 local function openUpgradeMenu()
     lib.registerContext({
         id = 'upgradeMenu',
@@ -2244,20 +2295,27 @@ function openTuningMenu()
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
                 end,
             },
+            {
+                title = "Camera",
+                description = "Changer de point de vue",
+                icon = 'video',
+                onSelect = function()
+                    openCameraMenu()
+                    playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
+                end,
+            },
         }
     })
-
-    -- Setting the player cam position
-    local vehPos = GetEntityCoords(vehicle)
-    local camPos = GetOffsetFromEntityInWorldCoords(vehicle, -4.0, 0.0, 2.5)
-    local headingToObject = GetHeadingFromVector_2d(vehPos.x - camPos.x, vehPos.y - camPos.y)
-
-    cam = CreateCamWithParams('DEFAULT_SCRIPTED_CAMERA', camPos.x, camPos.y, camPos.z, -35.0, 0.0,
-        headingToObject, GetGameplayCamFov(), false, 2)
-
-
-    SetCamActive(cam, true)
-    RenderScriptCams(true, true, 600, true, true)
+	-- Setting the player cam position
+	local vehPos = GetEntityCoords(vehicle)
+	local camPos = GetOffsetFromEntityInWorldCoords(vehicle, -4.0, 0.0, 2.5)
+	local headingToObject = GetHeadingFromVector_2d(vehPos.x - camPos.x, vehPos.y - camPos.y)
+	
+	cam = CreateCamWithParams('DEFAULT_SCRIPTED_CAMERA', camPos.x, camPos.y, camPos.z, -35.0, 0.0,
+	headingToObject, GetGameplayCamFov(), false, 2)
+	
+	SetCamActive(cam, true)
+	RenderScriptCams(true, true, 600, true, true)
 
     lib.showContext('tuningMenu')
     showVehicleStats()

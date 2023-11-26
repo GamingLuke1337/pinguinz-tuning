@@ -8,7 +8,7 @@ local chunk = assert(load(import, ('@@ox_core/%s'):format(file)))
 
 chunk()
 
-function hasAccess(job)
+--[[ function hasAccess(job)
     if not job then return true end
 
     for k,v in pairs(player.groups) do
@@ -16,4 +16,4 @@ function hasAccess(job)
     end
     
     return false
-end
+end ]]

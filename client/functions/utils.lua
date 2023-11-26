@@ -46,8 +46,24 @@ function getVehicleColor()
 	return bgColor
 end
 
-function toggleCam()
-	-- todo
+function toggleCam(direction, veh)
+    local vehicle = veh
+    local camPos = vector3(0.0, 0.0, 0.0) -- Position de caméra par défaut
+	local vehPos = GetEntityCoords(vehicle)
+    if direction == "front" then
+        camPos = GetOffsetFromEntityInWorldCoords(vehicle, 0.0, 5.0, 2.5)
+    elseif direction == "behind" then
+        camPos = GetOffsetFromEntityInWorldCoords(vehicle, 0.0, -5.0, 2.5)
+    elseif direction == "left" then
+        camPos = GetOffsetFromEntityInWorldCoords(vehicle, -4.0, 0.0, 2.5)
+    elseif direction == "right" then
+        camPos = GetOffsetFromEntityInWorldCoords(vehicle, 4.0, 0.0, 2.5)
+    end
+
+    if cam then
+		local headingToObject = GetHeadingFromVector_2d(vehPos.x - camPos.x, vehPos.y - camPos.y)
+		SetCamParams(cam, camPos.x, camPos.y, camPos.z, -35.0, 0.0, headingToObject, 50.0, 900, 1, 3, 0)
+    end
 end
 
 function showVehicleStats()

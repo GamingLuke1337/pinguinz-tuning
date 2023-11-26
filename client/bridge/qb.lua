@@ -3,7 +3,7 @@ if not qb then return end
 
 local QBCore = exports['qb-core']:GetCoreObject()
 
-function hasAccess(job)
+--[[ function hasAccess(job)
     if not job then return true end
 
     local playerData = QBCore.Functions.GetPlayerData()
@@ -11,4 +11,4 @@ function hasAccess(job)
     if playerData.job.name == job then return true end
     
     return false
-end
+end ]]
