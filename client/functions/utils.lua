@@ -51,12 +51,14 @@ function ToggleCamByPosition(direction, veh)
     local vehicle = veh or cache.vehicle
     local camPos = vector3(0.0, 0.0, 0.0) -- Position de caméra par défaut
 	local vehPos = GetEntityCoords(vehicle)
+	
 	local xRot = -35.0
 	local yRot = 0.0
+
     if direction == "front" then
-        camPos = GetOffsetFromEntityInWorldCoords(vehicle, -1.0, 5.0, 1.5)
+        camPos = GetOffsetFromEntityInWorldCoords(vehicle, -2.0, 4.5, 1.5)
     elseif direction == "back" then
-        camPos = GetOffsetFromEntityInWorldCoords(vehicle, 1.0, -5.0, 1.5)
+        camPos = GetOffsetFromEntityInWorldCoords(vehicle, 2.0, -4.5, 1.5)
     elseif direction == "left" then
         camPos = GetOffsetFromEntityInWorldCoords(vehicle, -4.0, 0.0, 2.5)
     elseif direction == "right" then

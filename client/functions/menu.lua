@@ -945,7 +945,8 @@ local function bodyPartsMenu()
 
                     local mod = mods.modRoof.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
-
+                    ToggleCamByPosition("left", vehicle)
+                    
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
                 end,
