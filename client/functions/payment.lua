@@ -9,7 +9,7 @@ function confirmPayment(vehiclePlate)
     for k, v in ipairs(cart) do
         local modPrice = tonumber(v.modPrice)
         cost = cost + modPrice
-        modListMsg = ("- %s  %s **%s** $\n"):format(v.modLabel, v.modLevel, modPrice)
+        modListMsg = ("%s- %s  %s **%s** $\n"):format(modListMsg, v.modLabel, v.modLevel, modPrice)
     end
 
     modListMsg = ("%s\n Total: **%s** $"):format(modListMsg, cost)

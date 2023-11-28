@@ -59,6 +59,8 @@ function ToggleCamByPosition(direction, veh)
         camPos = GetOffsetFromEntityInWorldCoords(vehicle, -2.0, 4.5, 1.5)
     elseif direction == "back" then
         camPos = GetOffsetFromEntityInWorldCoords(vehicle, 2.0, -4.5, 1.5)
+	elseif direction == "top" then
+        camPos = GetOffsetFromEntityInWorldCoords(vehicle, 0.0, -2.0, 2.0)
     elseif direction == "left" then
         camPos = GetOffsetFromEntityInWorldCoords(vehicle, -4.0, 0.0, 2.5)
     elseif direction == "right" then

@@ -1,131 +1,131 @@
 local mods = {
     modEngine = {
         modNum = 11,
-        label = "Engine Level",
+        label = "Moteur",
         parent = "upgradeMenu",
         title = "Engine",
         icon = "gauge",
-        price = { 13.95, 32.56, 65.12, 139.53 }
+        price = { 15.0, 35.0, 50.0, 70.0 },
     },
     modBrakes = {
         modNum = 12,
-        label = "Brakes Level",
+        label = "Freins",
         parent = "upgradeMenu",
         title = "Breaks",
         price = { 4.65, 9.3, 18.6, 13.95 }
     },
     modTransmission = {
         modNum = 13,
-        label = "Transimission Level",
+        label = "Transimission",
         parent = "upgradeMenu",
         title = "Transmission",
-        price = { 13.95, 20.93, 46.51, 63.55 }
+        price = { 15.0, 30.0, 50.0, 70.0 },
     },
     modSuspension = {
         modNum = 15,
-        label = "Suspension Level",
+        label = "Suspension",
         parent = "upgradeMenu",
         title = "Suspension",
-        price = { 3.72, 7.44, 14.88, 29.77, 40.2 }
+        price = { 3.0, 7.0, 15.0, 30.0, 40.0 }
     },
     modArmor = {
         modNum = 16,
-        label = "Armor Level",
+        label = "Armure",
         parent = "upgradeMenu",
         title = "Armor",
-        price = { 69.77, 116.28, 130.00, 150.00, 180.00, 190.00 }
+        price = { 69.77, 110.28, 120.00, 140.00, 170.00, 180.00 }
     },
     modTurbo = {
         modNum = 18,
         label = "Trubo",
         parent = "upgradeMenu",
         title = "Turbo",
-        price = 55.81
+        price = 55.0
     },
     --- body parts
     modSpoilers = {
         modNum = 0,
-        label = "Spoiler",
+        label = "Ailerons",
         parent = "bodyPartsMenu",
-        title = "Spoilers",
+        title = "Ailerons",
         icon = "wind",
         price = 4.65
     },
     modFrontBumper = {
         modNum = 1,
-        label = "Front Bumper",
+        label = "Pares-chocs Avant",
         parent = "bodyPartsMenu",
-        title = "Front Bumpers",
+        title = "Pares-chocs Avant",
         icon = "car-rear",
         price = 5.12
     },
     modRearBumper = {
         modNum = 2,
-        label = "Rear Bumper",
+        label = "Pares-chocs Arrière",
         parent = "bodyPartsMenu",
-        title = "Rear Bumpers",
+        title = "Pares-chocs Arrière",
         icon = "car-rear",
         price = 5.12
     },
     modSideSkirt = {
         modNum = 3,
-        label = "Side Skirt",
+        label = "Jupes Latérales",
         parent = "bodyPartsMenu",
-        title = "Side Skirt",
+        title = "Jupes Latérales",
         icon = "car-side",
         price = 4.65
     },
     modExhaust = {
         modNum = 4,
-        label = "Exhaust",
+        label = "Echappements",
         parent = "bodyPartsMenu",
-        title = "Exhaust",
+        title = "Echappements",
         icon = "car",
         price = 5.12
     },
     modFrame = {
         modNum = 5,
-        label = "Frame",
+        label = "Arceaux",
         parent = "bodyPartsMenu",
-        title = "Frame",
+        title = "Arceaux",
         icon = "car",
         price = 5.12
     },
     modGrille = {
         modNum = 6,
-        label = "Grille",
+        label = "Calandres",
         parent = "bodyPartsMenu",
-        title = "Grille",
+        title = "Calandres",
         icon = "car",
         price = 3.72
     },
     modHood = {
         modNum = 7,
-        label = "Hood",
+        label = "Capots",
         parent = "bodyPartsMenu",
-        title = "Hood",
+        title = "Capots",
         icon = "car",
         price = 4.88
     },
     modFender = {
         modNum = 8,
-        label = "Left Fender",
+        label = "Aile Gauche",
         parent = "bodyPartsMenu",
-        title = "Left Fender",
+        title = "Aile Gauche",
         icon = "car-side",
         price = 5.12
     },
     modRightFender = {
         modNum = 9,
-        label = "Right Fender",
+        label = "Aile Droit",
         parent = "bodyPartsMenu",
-        title = "Right Fender",
+        label = "Aile Droit",
         icon = "car-side",
         price = 5.12
     },
     modRoof = {
         modNum = 10,
-        label = "Roof",
+        label = "Toit",
         parent = "bodyPartsMenu",
         title = "Roof",
         icon = "car",
@@ -133,15 +133,15 @@ local mods = {
     },
     modHorns = {
         modNum = 14,
-        label = "Horn",
+        label = "Klaxons",
         parent = "cosmeticsMenu",
-        title = "Horn",
+        title = "Klaxons",
         icon = "bullhorn",
         price = 1.12
     },
     modXenon = {
         modNum = 22,
-        label = "Xenon",
+        label = "Phares",
         parent = 'bodyPartsMenu',
         title = "Xenon",
         icon = "lightbulb",
@@ -173,7 +173,7 @@ local mods = {
         price = 4.65
     },
     modFrontWheel3 = {
-        label = "suv",
+        label = "SUV",
         parent = 'wheelsMenu',
         modNum = 23,
         title = "Suv",
@@ -230,7 +230,7 @@ local mods = {
     },
     modTrimA = {
         modNum = 27,
-        label = "Interior",
+        label = "Interieur",
         parent = 'cosmeticsMenu',
         title = "Interior",
         icon = "couch",
@@ -238,7 +238,7 @@ local mods = {
     },
     modOrnaments = {
         modNum = 28,
-        label = "Trim",
+        label = "Jantes",
         parent = 'cosmeticsMenu',
         title = "Trim",
         icon = "t",
@@ -246,7 +246,7 @@ local mods = {
     },
     modDashboard = {
         modNum = 29,
-        label = "Dashboard",
+        label = "Tableau de bord",
         parent = 'cosmeticsMenu',
         title = "Dashboard",
         icon = "car",
@@ -254,7 +254,7 @@ local mods = {
     },
     modDial = {
         modNum = 30,
-        label = "Speedometer",
+        label = "Compteurs",
         parent = 'cosmeticsMenu',
         title = "Speedometer",
         icon = "gauge",
@@ -262,7 +262,7 @@ local mods = {
     },
     modDoorSpeaker = {
         modNum = 31,
-        label = "Door Speaker",
+        label = "Haut Parleurs Portières",
         parent = 'cosmeticsMenu',
         title = "Door Speaker",
         icon = "door-open",
@@ -270,7 +270,7 @@ local mods = {
     },
     modSeats = {
         modNum = 32,
-        label = "Seats",
+        label = "Sièges",
         parent = 'cosmeticsMenu',
         title = "Seat",
         icon = "chair",
@@ -278,65 +278,65 @@ local mods = {
     },
     modSteeringWheel = {
         modNum = 33,
-        label = "Steering wheel",
+        label = "Volants",
         parent = 'cosmeticsMenu',
-        title = "Steering wheel",
+        title = "Volants",
         icon = "dharmachakra",
         price = 4.19
     },
     modShifterLeavers = {
         modNum = 34,
-        label = "Shifter Leavers",
+        label = "Leviers de vitesse",
         parent = 'cosmeticsMenu',
-        title = "Shifter leavers",
+        title = "Leviers de vitesse",
         icon = "gear",
         price = 3.26
     },
     modAPlate = {
         modNum = 35,
-        label = "Plate",
+        label = "Plaque",
         parent = 'cosmeticsMenu',
-        title = "Plate",
+        title = "Plaque",
         icon = "credit-card",
         price = 4.19
     },
     modSpeakers = {
         modNum = 36,
-        label = "Speakers",
+        label = "Haut-Parleurs",
         parent = 'cosmeticsMenu',
-        title = "Speakers",
+        title = "Haut-Parleurs",
         icon = "headphones",
         price = 6.98
     },
     modTrunk = {
         modNum = 37,
-        label = "Trunk",
+        label = "Coffre",
         parent = 'cosmeticsMenu',
-        title = "Trunk",
+        title = "Coffre",
         icon = "car-rear",
         price = 5.58
     },
     modHydrolic = {
         modNum = 38,
-        label = "Hydrolic",
+        label = "Hydrolique",
         parent = 'cosmeticsMenu',
-        title = "Hydrolic",
+        title = "Hydrolique",
         icon = "h",
         price = 5.12
     },
     modEngineBlock = {
         modNum = 39,
-        label = "Engine block",
+        label = "Bloc Moteur",
         parent = 'cosmeticsMenu',
-        title = "Engine block",
+        title = "Bloc Moteur",
         icon = "battery-empty",
         price = 5.12
     },
     modAirFilter = {
         modNum = 40,
-        label = "Air filter",
+        label = "Filtre à Air",
         parent = 'cosmeticsMenu',
-        title = "Air filter",
+        title = "Filtre à Air",
         icon = "filter",
         price = 3.72
     },

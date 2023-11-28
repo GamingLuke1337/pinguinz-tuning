@@ -76,7 +76,7 @@ local function openModsMenu(veh, mod, maxMods)
         else
             modPercentage = modPrice / 100
         end
-
+        
         local price = vehiclePrice * modPercentage
         options[#options+1] = {
             title = menuTitle,
@@ -101,6 +101,10 @@ local function openModsMenu(veh, mod, maxMods)
                     modLevel = modNumToSet,
                     modPrice = price,
                 }
+
+                if modType == "modHorns" then
+                    StartVehicleHorn(vehicle, 10000, "HELDDOWN", true)
+                end
 
                 local foundMatch = false
                 for l, existingModData in ipairs(cart) do
@@ -945,7 +949,7 @@ local function bodyPartsMenu()
 
                     local mod = mods.modRoof.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
-                    ToggleCamByPosition("left", vehicle)
+                    ToggleCamByPosition("top", vehicle)
                     
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
