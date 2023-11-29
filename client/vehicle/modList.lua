@@ -26,18 +26,18 @@ local mods = {
         label = "Suspension",
         parent = "upgradeMenu",
         title = "Suspension",
-        price = { 3.0, 7.0, 15.0, 30.0, 40.0 }
+        price = { 3.0, 7.0, 15.0, 30.0, 40.0, 40.0, 40.0 }
     },
     modArmor = {
         modNum = 16,
         label = "Armure",
         parent = "upgradeMenu",
-        title = "Armor",
+        title = "Armure",
         price = { 69.77, 110.28, 120.00, 140.00, 170.00, 180.00 }
     },
     modTurbo = {
         modNum = 18,
-        label = "Trubo",
+        label = "Turbo",
         parent = "upgradeMenu",
         title = "Turbo",
         price = 55.0
@@ -117,9 +117,9 @@ local mods = {
     },
     modRightFender = {
         modNum = 9,
-        label = "Aile Droit",
+        label = "Aile Droite",
         parent = "bodyPartsMenu",
-        label = "Aile Droit",
+        label = "Aile Droite",
         icon = "car-side",
         price = 5.12
     },
@@ -127,7 +127,7 @@ local mods = {
         modNum = 10,
         label = "Toit",
         parent = "bodyPartsMenu",
-        title = "Roof",
+        title = "Toit",
         icon = "car",
         price = 5.58
     },
@@ -143,12 +143,12 @@ local mods = {
         modNum = 22,
         label = "Phares",
         parent = 'bodyPartsMenu',
-        title = "Xenon",
+        title = "Phares",
         icon = "lightbulb",
         price = 1.12
     },
     modFrontWheel0 = {
-        label = "sport",
+        label = "Sport",
         parent = 'wheelsMenu',
         modNum = 23,
         title = "Sport",
@@ -157,7 +157,7 @@ local mods = {
 
     },
     modFrontWheel1 = {
-        label = "muscle",
+        label = "Muscle",
         parent = 'wheelsMenu',
         modNum = 23,
         title = "Muscle",
@@ -165,7 +165,7 @@ local mods = {
         price = 4.65
     },
     modFrontWheel2 = {
-        label = "lowrider",
+        label = "Lowrider",
         parent = 'wheelsMenu',
         modNum = 23,
         title = "Lowrider",
@@ -176,20 +176,20 @@ local mods = {
         label = "SUV",
         parent = 'wheelsMenu',
         modNum = 23,
-        title = "Suv",
+        title = "SUV",
         icon = "dharmachakra",
         price = 4.65
     },
     modFrontWheel4 = {
-        label = "allterrain",
+        label = "Tout-Terrain",
         parent = 'wheelsMenu',
         modNum = 23,
-        title = "Allterrain",
+        title = "Tout-Terrain",
         icon = "dharmachakra",
         price = 4.65
     },
     modFrontWheel5 = {
-        label = "tuning",
+        label = "Tuning",
         parent = 'wheelsMenu',
         modNum = 23,
         title = "Tuning",
@@ -197,7 +197,7 @@ local mods = {
         price = 4.65
     },
     modFrontWheel6 = {
-        label = "motorcycle",
+        label = "Motorcycle",
         parent = 'wheelsMenu',
         modNum = 23,
         title = "Motorcycle",
@@ -205,18 +205,18 @@ local mods = {
         price = 4.65
     },
     modFrontWheel7 = {
-        label = "highend",
+        label = "Haut de Gamme",
         parent = 'wheelsMenu',
         modNum = 23,
-        title = "Highend",
+        title = "Haut de Gamme",
         icon = "dharmachakra",
         price = 4.65
     },
     modPlateHolder = {
         modNum = 25,
-        label = "Plate holder",
+        label = "Support Plaque",
         parent = 'cosmeticsMenu',
-        title = "Plate Holders",
+        title = "Support Plaque",
         icon = "credit-card",
         price = 3.49
     },
@@ -230,9 +230,9 @@ local mods = {
     },
     modTrimA = {
         modNum = 27,
-        label = "Interieur",
+        label = "Interieurs",
         parent = 'cosmeticsMenu',
-        title = "Interior",
+        title = "Interieurs",
         icon = "couch",
         price = 6.98
     },
@@ -240,15 +240,15 @@ local mods = {
         modNum = 28,
         label = "Jantes",
         parent = 'cosmeticsMenu',
-        title = "Trim",
+        title = "Jantes",
         icon = "t",
         price = 0.9
     },
     modDashboard = {
         modNum = 29,
-        label = "Tableau de bord",
+        label = "Tableaux de bord",
         parent = 'cosmeticsMenu',
-        title = "Dashboard",
+        title = "Tableaux de bord",
         icon = "car",
         price = 4.65
     },
@@ -256,15 +256,15 @@ local mods = {
         modNum = 30,
         label = "Compteurs",
         parent = 'cosmeticsMenu',
-        title = "Speedometer",
+        title = "Compteurs",
         icon = "gauge",
         price = 4.19
     },
     modDoorSpeaker = {
         modNum = 31,
-        label = "Haut Parleurs Portières",
+        label = "Haut-Parleurs Portières",
         parent = 'cosmeticsMenu',
-        title = "Door Speaker",
+        title = "Haut-Parleurs Portières",
         icon = "door-open",
         price = 5.58
     },
@@ -272,7 +272,7 @@ local mods = {
         modNum = 32,
         label = "Sièges",
         parent = 'cosmeticsMenu',
-        title = "Seat",
+        title = "Sièges",
         icon = "chair",
         price = 4.65
     },

@@ -1,5 +1,7 @@
 Config = {}
 
+Config.RestrictedCategories = { "vip", "emergency" }
+
 Config.WorkShops = {
     {
         job = "mechanic", -- false if you dont want to use the job

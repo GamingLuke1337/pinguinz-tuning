@@ -24,7 +24,7 @@ function CreateCustomLocations()
             coords = cfg.pos,
             distance = 8,
             onEnter = function(self)
-                if cache.vehicle and hasAccess(cfg.job) then
+                if cache.vehicle and hasAccess(cfg.job) and not LocalPlayer.state.isDead then
                     lib.showTextUI(locale("access_workshop_msg"))
                 end
             end,
@@ -35,7 +35,7 @@ function CreateCustomLocations()
                 if cache.vehicle and hasAccess(cfg.job) then
                     DrawMarker(36, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, cfg.marker.scale.x, cfg.marker.scale.y, cfg.marker.scale.z,
                     cfg.marker.color.r, cfg.marker.color.b, cfg.marker.color.b, cfg.marker.color.alpha, false, true, 2, nil, nil, false)
-                    if self.currentDistance < 8.0 and IsControlJustReleased(0, 38) then
+                    if self.currentDistance < 8.0 and IsControlJustReleased(0, 38) and not LocalPlayer.state.isDead then
                         local vehicle = cache.vehicle
                         currentVehProperties.old = getVehicleProperties(vehicle)
                         
