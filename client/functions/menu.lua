@@ -395,12 +395,6 @@ local function openUpgradeMenu()
     lib.showContext('upgradeMenu')
 end
 
--- RegisterCommand("prop", function(source, args, raw)
---     local ve = getVehicleProperties(cache.vehicle)
---     print(json.encode(ve, { indent = true }))
---     print(ve.modEngine)
--- end)
-
 local function openPearlescentMenu()
     local options = {}
     local vehicle = cache.vehicle
@@ -435,7 +429,7 @@ local function openPearlescentMenu()
                         disabled = disabled,
                         description = price .. "$",
                         onBack = onBack,
-                onSelect = function()
+                        onSelect = function()
                             lib.setVehicleProperties(vehicle, { pearlescentColor = colors[i].colors[j].index })
 
                             local newModData = {
@@ -2045,7 +2039,7 @@ local function openEstethicsMenu()
                     local mod = mods.modOrnaments.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
                     SetVehicleDoorsShut(cache.vehicle, true)
-                    ToggleCamByPosition("left", vehicle)
+                    ToggleCamByPosition("inside-front", vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -2102,7 +2096,7 @@ local function openEstethicsMenu()
                     local mod = mods.modDoorSpeaker.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
                     OpenVehicleDoor("doors")
-                    ToggleCamByPosition("left", vehicle)
+                    ToggleCamByPosition("driverdoor", vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -2140,7 +2134,7 @@ local function openEstethicsMenu()
                     local mod = mods.modSteeringWheel.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
                     SetVehicleDoorsShut(cache.vehicle, true)
-                    ToggleCamByPosition("inside-front", vehicle)
+                    ToggleCamByPosition("steering", vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -2159,7 +2153,7 @@ local function openEstethicsMenu()
                     local mod = mods.modShifterLeavers.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
                     SetVehicleDoorsShut(cache.vehicle, true)
-                    ToggleCamByPosition("left", vehicle)
+                    ToggleCamByPosition("inside-front", vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -2196,8 +2190,8 @@ local function openEstethicsMenu()
 
                     local mod = mods.modSpeakers.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
-                    OpenVehicleDoor("doors")
-                    ToggleCamByPosition("left", vehicle)
+                    --OpenVehicleDoor("doors")
+                    ToggleCamByPosition("back", vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')

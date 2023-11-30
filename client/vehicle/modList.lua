@@ -238,9 +238,9 @@ local mods = {
     },
     modOrnaments = {
         modNum = 28,
-        label = "Jantes",
+        label = "Finitions",
         parent = 'cosmeticsMenu',
-        title = "Jantes",
+        title = "Finitions",
         icon = "t",
         price = 0.9
     },

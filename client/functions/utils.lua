@@ -54,23 +54,38 @@ function ToggleCamByPosition(direction, veh)
 	
 	local xRot = -35.0
 	local yRot = 0.0
-
+	local headingToObject = nil
     if direction == "front" then
+		xRot = -25.0
         camPos = GetOffsetFromEntityInWorldCoords(vehicle, -2.0, 4.5, 1.5)
     elseif direction == "back" then
+		xRot = -25.0
         camPos = GetOffsetFromEntityInWorldCoords(vehicle, 2.0, -4.5, 1.5)
 	elseif direction == "top" then
-        camPos = GetOffsetFromEntityInWorldCoords(vehicle, 0.0, -2.5, 2.0)
+		xRot = -25.0
+        camPos = GetOffsetFromEntityInWorldCoords(vehicle, 0.0, -3.0, 2.0)
     elseif direction == "left" then
         camPos = GetOffsetFromEntityInWorldCoords(vehicle, -4.0, 0.0, 2.5)
     elseif direction == "right" then
         camPos = GetOffsetFromEntityInWorldCoords(vehicle, 4.0, 0.0, 2.5)
     elseif direction == "inside-front" then
-        camPos = GetOffsetFromEntityInWorldCoords(vehicle, 0.0, -0.2, 0.7)
+		headingToObject = 0.0
+		xRot = 0.0
+		headingToObject = 35.0
+        camPos = GetOffsetFromEntityInWorldCoords(vehicle, 0.4, -0.2, 0.3)
+	elseif direction == "steering" then
+		headingToObject = 0.0
+		xRot = 0.0
+        camPos = GetOffsetFromEntityInWorldCoords(vehicle, -0.3, -0.1, 0.5)
+    elseif direction == "driverdoor" then
+		headingToObject = 0.0
+        camPos = GetOffsetFromEntityInWorldCoords(vehicle, -1.0, -2.0, 2.0)
     end
 
     if cam then
-		local headingToObject = GetHeadingFromVector_2d(vehPos.x - camPos.x, vehPos.y - camPos.y)
+		if headingToObject == nil then
+			headingToObject = GetHeadingFromVector_2d(vehPos.x - camPos.x, vehPos.y - camPos.y)
+		end
 		SetCamParams(cam, camPos.x, camPos.y, camPos.z, xRot, yRot, headingToObject, 50.0, 700, 1, 3, 0)
     end
 end
@@ -83,20 +98,20 @@ function OpenVehicleDoor(doorToOpen)
 			SetVehicleDoorOpen(cache.vehicle, doorIndex, false, true)
 		end
 	elseif doorToOpen == "frontleft" then
-		SetVehicleDoorOpen(cache.vehicle, 0, false, true)
+		SetVehicleDoorOpen(cache.vehicle, 0, false, false)
 	elseif doorToOpen == "frontright" then
-		SetVehicleDoorOpen(cache.vehicle, 1, false, true)
+		SetVehicleDoorOpen(cache.vehicle, 1, false, false)
 	elseif doorToOpen == "backleft" then
-		SetVehicleDoorOpen(cache.vehicle, 2, false, true)
+		SetVehicleDoorOpen(cache.vehicle, 2, false, false)
 	elseif doorToOpen == "backright" then
-		SetVehicleDoorOpen(cache.vehicle, 3, false, true)
+		SetVehicleDoorOpen(cache.vehicle, 3, false, false)
 	elseif doorToOpen == "hood" then
-		SetVehicleDoorOpen(cache.vehicle, 4, false, true)
+		SetVehicleDoorOpen(cache.vehicle, 4, false, false)
 	elseif doorToOpen == "trunk" then
-		SetVehicleDoorOpen(cache.vehicle, 5, false, true)
+		SetVehicleDoorOpen(cache.vehicle, 5, false, false)
 	elseif doorToOpen == "doors" then
 		for doorIndex = 0, 3, 1 do
-			SetVehicleDoorOpen(cache.vehicle, doorIndex, false, true)
+			SetVehicleDoorOpen(cache.vehicle, doorIndex, false, false)
 		end
 	end
 end
