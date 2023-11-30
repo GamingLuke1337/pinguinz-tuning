@@ -54,39 +54,31 @@ function ToggleCamByPosition(direction, veh)
 	
 	local xRot = -35.0
 	local yRot = 0.0
-	local headingToObject = nil
+	local fov = 50.0
     if direction == "front" then
-		xRot = -25.0
         camPos = GetOffsetFromEntityInWorldCoords(vehicle, -2.0, 4.5, 1.5)
     elseif direction == "back" then
-		xRot = -25.0
         camPos = GetOffsetFromEntityInWorldCoords(vehicle, 2.0, -4.5, 1.5)
 	elseif direction == "top" then
-		xRot = -25.0
         camPos = GetOffsetFromEntityInWorldCoords(vehicle, 0.0, -3.0, 2.0)
     elseif direction == "left" then
         camPos = GetOffsetFromEntityInWorldCoords(vehicle, -4.0, 0.0, 2.5)
     elseif direction == "right" then
         camPos = GetOffsetFromEntityInWorldCoords(vehicle, 4.0, 0.0, 2.5)
     elseif direction == "inside-front" then
-		headingToObject = 0.0
+		fov = 70.0
 		xRot = 0.0
-		headingToObject = 35.0
-        camPos = GetOffsetFromEntityInWorldCoords(vehicle, 0.4, -0.2, 0.3)
+        camPos = GetOffsetFromEntityInWorldCoords(vehicle, 0.0, 0.0, 0.3)
 	elseif direction == "steering" then
-		headingToObject = 0.0
-		xRot = 0.0
-        camPos = GetOffsetFromEntityInWorldCoords(vehicle, -0.3, -0.1, 0.5)
+		fov = 70.0
+        camPos = GetOffsetFromEntityInWorldCoords(vehicle, 0.0, 0.0, 0.4)
     elseif direction == "driverdoor" then
-		headingToObject = 0.0
         camPos = GetOffsetFromEntityInWorldCoords(vehicle, -1.0, -2.0, 2.0)
     end
 
     if cam then
-		if headingToObject == nil then
-			headingToObject = GetHeadingFromVector_2d(vehPos.x - camPos.x, vehPos.y - camPos.y)
-		end
-		SetCamParams(cam, camPos.x, camPos.y, camPos.z, xRot, yRot, headingToObject, 50.0, 700, 1, 3, 0)
+		local headingToObject = GetHeadingFromVector_2d(vehPos.x - camPos.x, vehPos.y - camPos.y)
+		SetCamParams(cam, camPos.x, camPos.y, camPos.z, xRot, yRot, headingToObject, fov, 700, 1, 3, 0)
     end
 end
 

@@ -43,8 +43,7 @@ function CreateCustomLocations()
                         currentVehProperties.old.color1 = { color1_r, color1_g, color1_b }
     
                         local color2_r, color2_g, color2_b = GetVehicleCustomSecondaryColour(vehicle)
-                        currentVehProperties.old.color2 = { color2_r, color2_g, color2_b }
-                        SetVehicleEngineOn(vehicle, false, true, true)
+                        currentVehProperties.old.color2 = { color2_r, color2_g, color2_b }                        
                         openTuningMenu()
                     end
                 end

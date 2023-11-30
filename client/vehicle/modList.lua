@@ -342,9 +342,9 @@ local mods = {
     },
     modStruts = {
         modNum = 41,
-        label = "Struts",
+        label = "Barres support Moteur",
         parent = 'cosmeticsMenu',
-        title = "Struts",
+        title = "Barres support Moteur",
         icon = "gear",
         price = 6.51
     },
@@ -382,26 +382,26 @@ local mods = {
     },
     modWindows = {
         modNum = 46,
-        label = "Windows",
+        label = "Fenêtres",
         parent = 'cosmeticsMenu',
-        title = "Windows",
+        title = "Fenêtres",
         icon = "window-maximize",
         price = 4.19
     },
     modLivery = {
         modNum = 48,
-        label = "Livery",
+        label = "Livrées / Autocollants",
         parent = 'cosmeticsMenu',
-        title = "Livery",
+        title = "Livrées / Autocollants",
         icon = "spray-can-sparkles",
         price = 9.3
     },
 
     plateIndex = {
         modNum = "plateIndex",
-        label = "plate",
+        label = "Plaque",
         parent = 'bodyPartsMenu',
-        title = "Plate",
+        title = "Plaque",
         icon = "credit-card",
         price = 1.1
     },
