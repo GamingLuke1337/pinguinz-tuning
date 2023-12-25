@@ -212,6 +212,46 @@ local mods = {
         icon = "dharmachakra",
         price = 4.65
     },
+    modFrontWheel8 = {
+        label = "Bespoke",
+        parent = 'wheelsMenu',
+        modNum = 23,
+        title = "Bespoke",
+        icon = "dharmachakra",
+        price = 4.65
+    },
+    modFrontWheel9 = {
+        label = "Bennys",
+        parent = 'wheelsMenu',
+        modNum = 23,
+        title = "Bennys",
+        icon = "dharmachakra",
+        price = 4.65
+    },
+    modFrontWheel10 = {
+        label = "OldSchool",
+        parent = 'wheelsMenu',
+        modNum = 23,
+        title = "OldSchool",
+        icon = "dharmachakra",
+        price = 4.65
+    },
+    modFrontWheel11 = {
+        label = "Street",
+        parent = 'wheelsMenu',
+        modNum = 23,
+        title = "Street",
+        icon = "dharmachakra",
+        price = 4.65
+    },
+    modFrontWheel12 = {
+        label = "Track",
+        parent = 'wheelsMenu',
+        modNum = 23,
+        title = "Track",
+        icon = "dharmachakra",
+        price = 4.65
+    },
     modPlateHolder = {
         modNum = 25,
         label = "Support Plaque",
@@ -393,6 +433,14 @@ local mods = {
         label = "Livrées / Autocollants",
         parent = 'cosmeticsMenu',
         title = "Livrées / Autocollants",
+        icon = "spray-can-sparkles",
+        price = 9.3
+    },
+    modExtra = {
+        modNum = 99,
+        label = "Extra",
+        parent = 'cosmeticsMenu',
+        title = "Extra / Custom",
         icon = "spray-can-sparkles",
         price = 9.3
     },

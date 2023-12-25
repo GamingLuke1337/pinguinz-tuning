@@ -86,7 +86,11 @@ local function openModsMenu(veh, mod, maxMods)
             description = price .. " $",
             onSelect = function()
                 local properties = {}
-                properties[modType] = modNumToSet
+                if modType == "modExtra" then
+                    properties["modLivery"] = modNumToSet
+                else
+                    properties[modType] = modNumToSet
+                end
                 lib.setVehicleProperties(vehicle, properties)
                 playSound('Zoom_In', 'DLC_HEIST_PLANNING_BOARD_SOUNDS')
 
@@ -1687,6 +1691,86 @@ local function openWheelsCategory()
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
                 end
             },
+            {
+                title = "Bespoke",
+                icon = "dharmachakra",
+                iconColor = getVehicleColor(),
+                
+                onSelect = function()
+                    local vehicle = cache.vehicle
+                    lib.setVehicleProperties(vehicle, { wheels = 8 })
+
+                    local mod = mods.modFrontWheel8.modNum
+                    local mods = getVehicleModCounts(vehicle, mod)
+
+                    openModsMenu(vehicle, mod, mods)
+                    playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
+                end
+            },
+            {
+                title = "Bennys",
+                icon = "dharmachakra",
+                iconColor = getVehicleColor(),
+                
+                onSelect = function()
+                    local vehicle = cache.vehicle
+                    lib.setVehicleProperties(vehicle, { wheels = 9 })
+
+                    local mod = mods.modFrontWheel9.modNum
+                    local mods = getVehicleModCounts(vehicle, mod)
+
+                    openModsMenu(vehicle, mod, mods)
+                    playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
+                end
+            },
+            {
+                title = "OldSchool",
+                icon = "dharmachakra",
+                iconColor = getVehicleColor(),
+                
+                onSelect = function()
+                    local vehicle = cache.vehicle
+                    lib.setVehicleProperties(vehicle, { wheels = 10 })
+
+                    local mod = mods.modFrontWheel10.modNum
+                    local mods = getVehicleModCounts(vehicle, mod)
+
+                    openModsMenu(vehicle, mod, mods)
+                    playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
+                end
+            },
+            {
+                title = "Street",
+                icon = "dharmachakra",
+                iconColor = getVehicleColor(),
+                
+                onSelect = function()
+                    local vehicle = cache.vehicle
+                    lib.setVehicleProperties(vehicle, { wheels = 11 })
+
+                    local mod = mods.modFrontWheel11.modNum
+                    local mods = getVehicleModCounts(vehicle, mod)
+
+                    openModsMenu(vehicle, mod, mods)
+                    playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
+                end
+            },
+            {
+                title = "Track",
+                icon = "dharmachakra",
+                iconColor = getVehicleColor(),
+                
+                onSelect = function()
+                    local vehicle = cache.vehicle
+                    lib.setVehicleProperties(vehicle, { wheels = 12 })
+
+                    local mod = mods.modFrontWheel12.modNum
+                    local mods = getVehicleModCounts(vehicle, mod)
+
+                    openModsMenu(vehicle, mod, mods)
+                    playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
+                end
+            },
         }
     })
     lib.showContext('wheelsCategory')
@@ -2396,6 +2480,24 @@ local function openEstethicsMenu()
 
                     local mod = mods.modLivery.modNum
                     local mods = getVehicleModCounts(cache.vehicle, mods.modLivery.modNum)
+                    SetVehicleDoorsShut(cache.vehicle, true)
+                    ToggleCamByPosition("left", vehicle)
+
+                    openModsMenu(vehicle, mod, mods)
+                    playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
+                end,
+            },
+            {
+                title = locale("extra_title"),
+                icon = mods.modLivery.icon or 'credit-card',
+                iconColor = getVehicleColor(),
+                disabled = not (GetVehicleLiveryCount(cache.vehicle) > 0),
+                description = tostring(GetVehicleLiveryCount(cache.vehicle)),
+                onSelect = function()
+                    local vehicle = cache.vehicle
+
+                    local mod = mods.modExtra.modNum
+                    local mods = GetVehicleLiveryCount(cache.vehicle)
                     SetVehicleDoorsShut(cache.vehicle, true)
                     ToggleCamByPosition("left", vehicle)
 

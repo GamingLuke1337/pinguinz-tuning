@@ -9,7 +9,7 @@ end
 function getVehicleModCounts(veh, mod)
 	local vehicle = veh
 	local modCounts = 0
-	if mod == 48 then
+	if mod == 99 then
 		modCounts = GetVehicleLiveryCount(veh)
 	else
 		modCounts = GetNumVehicleMods(vehicle, mod)
