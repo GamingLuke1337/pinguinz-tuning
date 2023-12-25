@@ -91,9 +91,7 @@ local function openModsMenu(veh, mod, maxMods)
                 playSound('Zoom_In', 'DLC_HEIST_PLANNING_BOARD_SOUNDS')
 
                 local mods = getVehicleModCounts(vehicle, modNum)
-
                 openModsMenu(vehicle, modNum, mods)
-
                 local newModData = {
                     modLabel = modLabel,
                     modType = modType,
@@ -2364,7 +2362,7 @@ local function openEstethicsMenu()
                     local vehicle = cache.vehicle
 
                     local mod = mods.modLivery.modNum
-                    local mods = getVehicleModCounts(vehicle, mod)
+                    local mods = getVehicleModCounts(cache.vehicle, mods.modLivery.modNum)
                     SetVehicleDoorsShut(cache.vehicle, true)
                     ToggleCamByPosition("left", vehicle)
 

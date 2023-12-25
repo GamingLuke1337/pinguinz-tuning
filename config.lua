@@ -5,7 +5,7 @@ Config.RestrictedCategories = { "vip", "emergency" }
 Config.WorkShops = {
     {
         job = "mechanic", -- false if you dont want to use the job
-        pos = vector3(-208.1416, -1327.2565, 30.7101),
+        pos = vector3(144.6111, -3030.5039, 7.0421),
         blip = {
             enable = false,
             name   = "Benny's Custom",
