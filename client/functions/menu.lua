@@ -382,6 +382,39 @@ local function openUpgradeMenu()
     lib.showContext('upgradeMenu')
 end
 
+local function openShowPriceMenu()
+    --[[ if not cart[1] then return end ]]
+
+    local cost = 0
+    local modListMsg = ""
+    modListMsg = ("------ **%s** ------\n"):format(GetVehicleNumberPlateText(cache.vehicle))
+    for k, v in ipairs(cart) do
+        local modPrice = tonumber(v.modPrice)
+        cost = cost + modPrice
+        modListMsg = ("%s- %s  %s **%s** $\n"):format(modListMsg, v.modLabel, v.modLevel, modPrice)
+    end
+
+    modListMsg = ("%s\n Total: **%s** $"):format(modListMsg, cost)
+
+    lib.registerContext({
+        id = 'ShowPriceMenu',
+        title = "Prix du véhicule",
+        menu = "tuningMenu",
+        onExit = onExit,
+        onBack = onBack,
+        options = {
+            {
+                title = GetVehicleNumberPlateText(cache.vehicle),
+                icon = "money-bill",
+                iconColor = getVehicleColor(),
+                description = modListMsg,
+            },
+        }
+    })
+
+    lib.showContext('ShowPriceMenu')
+end
+
 local function openPearlescentMenu()
     local options = {}
     local vehicle = cache.vehicle
@@ -2407,6 +2440,15 @@ function openTuningMenu()
                 disabled = isVehicleAllowedToUpgradePerf(),
                 onSelect = function()
                     openUpgradeMenu()
+                    playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
+                end,
+            },
+            {
+                title = "Prix",
+                description = "Voir le prix final",
+                icon = "money-bill",
+                onSelect = function()
+                    openShowPriceMenu()
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
                 end,
             },
