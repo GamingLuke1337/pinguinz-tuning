@@ -1532,7 +1532,7 @@ local function openWheelsCategory()
                 
                 onSelect = function()
                     local vehicle = cache.vehicle
-                    lib.setVehicleProperties(vehicle, { wheels = 5 })
+                    lib.setVehicleProperties(vehicle, { wheels = 0 })
 
                     local mod = mods.modFrontWheel0.modNum
                     local mods = getVehicleModCounts(vehicle, mod)

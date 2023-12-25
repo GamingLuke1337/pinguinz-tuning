@@ -119,7 +119,7 @@ local mods = {
         modNum = 9,
         label = "Aile Droite",
         parent = "bodyPartsMenu",
-        label = "Aile Droite",
+        title = "Aile Droite",
         icon = "car-side",
         price = 5.12
     },
