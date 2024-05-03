@@ -112,5 +112,6 @@
 	"society_payment_success": "%s $ removed from your company account",
 	"cash_payment_success": "%s $ removed from your wallet",
 	"bank_payment_success": "%s $ removed from your bank account",
-	"confirm_payment_dialog_title": "Payment Confirmation"
+	"confirm_payment_dialog_title": "Payment Confirmation",
+	"access_workshop_msg": "[E] - Pour accéder à l'atelier"
 }

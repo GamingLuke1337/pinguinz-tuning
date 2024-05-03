@@ -8,9 +8,12 @@ end
 
 function getVehicleModCounts(veh, mod)
 	local vehicle = veh
-
-	local modCounts = GetNumVehicleMods(vehicle, mod)
-
+	local modCounts = 0
+	if mod == 99 then
+		modCounts = GetVehicleLiveryCount(veh)
+	else
+		modCounts = GetNumVehicleMods(vehicle, mod)
+	end
 	return modCounts
 end
 
@@ -46,8 +49,76 @@ function getVehicleColor()
 	return bgColor
 end
 
-function toggleCam()
-	-- todo
+function ToggleCamByPosition(direction, veh)
+
+    local vehicle = veh or cache.vehicle
+    local camPos = vector3(0.0, 0.0, 0.0) -- Position de caméra par défaut
+	local vehPos = GetEntityCoords(vehicle)
+	
+	local xRot = -35.0
+	local yRot = 0.0
+	local fov = 50.0
+    if direction == "front" then
+        camPos = GetOffsetFromEntityInWorldCoords(vehicle, -2.0, 4.5, 1.5)
+    elseif direction == "back" then
+        camPos = GetOffsetFromEntityInWorldCoords(vehicle, 2.0, -4.5, 1.5)
+	elseif direction == "top" then
+        camPos = GetOffsetFromEntityInWorldCoords(vehicle, 0.0, -3.0, 2.0)
+    elseif direction == "left" then
+        camPos = GetOffsetFromEntityInWorldCoords(vehicle, -4.0, 0.0, 2.5)
+    elseif direction == "right" then
+        camPos = GetOffsetFromEntityInWorldCoords(vehicle, 4.0, 0.0, 2.5)
+    elseif direction == "inside-front" then
+		fov = 70.0
+		xRot = 0.0
+        camPos = GetOffsetFromEntityInWorldCoords(vehicle, 0.0, 0.0, 0.3)
+	elseif direction == "steering" then
+		fov = 70.0
+        camPos = GetOffsetFromEntityInWorldCoords(vehicle, 0.0, 0.0, 0.4)
+    elseif direction == "driverdoor" then
+        camPos = GetOffsetFromEntityInWorldCoords(vehicle, -1.0, -2.0, 2.0)
+    end
+
+    if cam then
+		local headingToObject = GetHeadingFromVector_2d(vehPos.x - camPos.x, vehPos.y - camPos.y)
+		SetCamParams(cam, camPos.x, camPos.y, camPos.z, xRot, yRot, headingToObject, fov, 700, 1, 3, 0)
+    end
+end
+
+function OpenVehicleDoor(doorToOpen)
+	local doorsCount = GetNumberOfVehicleDoors(cache.vehicle)
+	SetVehicleDoorsShut(cache.vehicle, true)
+	if not doorToOpen or doorToOpen == "all" then
+		for doorIndex = 1, doorsCount, 1 do
+			SetVehicleDoorOpen(cache.vehicle, doorIndex, false, true)
+		end
+	elseif doorToOpen == "frontleft" then
+		SetVehicleDoorOpen(cache.vehicle, 0, false, false)
+	elseif doorToOpen == "frontright" then
+		SetVehicleDoorOpen(cache.vehicle, 1, false, false)
+	elseif doorToOpen == "backleft" then
+		SetVehicleDoorOpen(cache.vehicle, 2, false, false)
+	elseif doorToOpen == "backright" then
+		SetVehicleDoorOpen(cache.vehicle, 3, false, false)
+	elseif doorToOpen == "hood" then
+		SetVehicleDoorOpen(cache.vehicle, 4, false, false)
+	elseif doorToOpen == "trunk" then
+		SetVehicleDoorOpen(cache.vehicle, 5, false, false)
+	elseif doorToOpen == "doors" then
+		for doorIndex = 0, 3, 1 do
+			SetVehicleDoorOpen(cache.vehicle, doorIndex, false, false)
+		end
+	end
+end
+
+function isVehicleAllowedToUpgradePerf()
+	local vehicleModel = GetEntityModel(cache.vehicle)
+	for k, v in pairs(vehicles) do
+		if vehicleModel == GetHashKey(k) then
+			return lib.table.contains(Config.RestrictedCategories, v.category)
+		end
+	end
+	return false
 end
 
 function showVehicleStats()

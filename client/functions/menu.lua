@@ -34,7 +34,7 @@ local function openModsMenu(veh, mod, maxMods)
         --Wait(1)
     end
 
-    local vehiclePrice = getVehiclePrice(vehicle) or 100
+    local vehiclePrice = getVehiclePrice(vehicle) or 50000
     SetVehicleModKit(veh, 0)
 
     for i = 0, maxMods, 1 do
@@ -76,7 +76,7 @@ local function openModsMenu(veh, mod, maxMods)
         else
             modPercentage = modPrice / 100
         end
-
+        
         local price = vehiclePrice * modPercentage
         options[#options+1] = {
             title = menuTitle,
@@ -86,14 +86,16 @@ local function openModsMenu(veh, mod, maxMods)
             description = price .. " $",
             onSelect = function()
                 local properties = {}
-                properties[modType] = modNumToSet
+                if modType == "modExtra" then
+                    properties["modLivery"] = modNumToSet
+                else
+                    properties[modType] = modNumToSet
+                end
                 lib.setVehicleProperties(vehicle, properties)
                 playSound('Zoom_In', 'DLC_HEIST_PLANNING_BOARD_SOUNDS')
 
                 local mods = getVehicleModCounts(vehicle, modNum)
-
                 openModsMenu(vehicle, modNum, mods)
-
                 local newModData = {
                     modLabel = modLabel,
                     modType = modType,
@@ -101,6 +103,10 @@ local function openModsMenu(veh, mod, maxMods)
                     modLevel = modNumToSet,
                     modPrice = price,
                 }
+
+                if modType == "modHorns" then
+                    StartVehicleHorn(vehicle, 10000, "HELDDOWN", true)
+                end
 
                 local foundMatch = false
                 for l, existingModData in ipairs(cart) do
@@ -126,6 +132,7 @@ local function openModsMenu(veh, mod, maxMods)
         title = modTitle,
         options = options,
         onExit = onExit,
+        onBack = onBack,
     })
 
     lib.showContext('modsMenu' .. mod)
@@ -137,12 +144,12 @@ local function openTurboMenu()
     local enabled = getVehicleProperties(vehicle).modTurbo
     local vehiclePrice = getVehiclePrice(vehicle) or 50000
 
-
     lib.registerContext({
         id = 'turboMenu',
         menu = mods.modTurbo.parent,
         title = mods.modTurbo.title,
         onExit = onExit,
+        onBack = onBack,
         options = {
             {
                 title = locale("turbo_enabled"),
@@ -224,12 +231,65 @@ local function openTurboMenu()
     lib.showContext('turboMenu')
 end
 
+local function openCameraMenu()
+    local vehicle = cache.vehicle
+
+    lib.registerContext({
+        id = 'cameraMenu',
+        menu = "tuningMenu",
+        title = "Camera",
+        onExit = onExit,
+        onBack = onBack,
+        options = {
+            {
+                title = "Avant",
+                icon = "circle-arrow-up",
+                disabled = enabled,
+                onSelect = function()
+                    ToggleCamByPosition("front", vehicle)
+                    openCameraMenu()
+                end
+            },
+            {
+                title = "Arrière",
+                icon = "circle-arrow-down",
+                disabled = enabled,
+                onSelect = function()
+                    ToggleCamByPosition("back", vehicle)
+                    openCameraMenu()
+                end
+            },
+            {
+                title = "Gauche",
+                icon = "circle-arrow-left",
+                disabled = enabled,
+                onSelect = function()
+                    ToggleCamByPosition("left", vehicle)
+                    openCameraMenu()
+                end
+            },
+            {
+                title = "Droite",
+                icon = "circle-arrow-right",
+                disabled = enabled,
+                onSelect = function()
+                    ToggleCamByPosition("right", vehicle)
+                    openCameraMenu()
+                end
+            },
+        }
+    })
+
+    lib.showContext('cameraMenu')
+end
+
 local function openUpgradeMenu()
     lib.registerContext({
         id = 'upgradeMenu',
         title = locale("upgrade_category_title"),
         menu = "tuningMenu",
         onExit = onExit,
+        onBack = onBack,
         options = {
             {
                 title = locale("engine_title"),
@@ -243,7 +303,7 @@ local function openUpgradeMenu()
                     local mod = mods.modEngine.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
 
-                    openModsMenu(vehicle, mod, mods)
+                    openModsMenu(vehicle, mod, mods)                    
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
                 end,
             },
@@ -326,11 +386,38 @@ local function openUpgradeMenu()
     lib.showContext('upgradeMenu')
 end
 
--- RegisterCommand("prop", function(source, args, raw)
---     local ve = getVehicleProperties(cache.vehicle)
---     print(json.encode(ve, { indent = true }))
---     print(ve.modEngine)
--- end)
+local function openShowPriceMenu()
+    --[[ if not cart[1] then return end ]]
+
+    local cost = 0
+    local modListMsg = ""
+    modListMsg = ("------ **%s** ------\n"):format(GetVehicleNumberPlateText(cache.vehicle))
+    for k, v in ipairs(cart) do
+        local modPrice = tonumber(v.modPrice)
+        cost = cost + modPrice
+        modListMsg = ("%s- %s  %s **%s** $\n"):format(modListMsg, v.modLabel, v.modLevel, modPrice)
+    end
+
+    modListMsg = ("%s\n Total: **%s** $"):format(modListMsg, cost)
+
+    lib.registerContext({
+        id = 'ShowPriceMenu',
+        title = "Prix du véhicule",
+        menu = "tuningMenu",
+        onExit = onExit,
+        onBack = onBack,
+        options = {
+            {
+                title = GetVehicleNumberPlateText(cache.vehicle),
+                icon = "money-bill",
+                iconColor = getVehicleColor(),
+                description = modListMsg,
+            },
+        }
+    })
+
+    lib.showContext('ShowPriceMenu')
+end
 
 local function openPearlescentMenu()
     local options = {}
@@ -343,7 +430,8 @@ local function openPearlescentMenu()
             title = colors[i].category,
             icon = 'paint-roller',
             iconColor = colors[i].color,
-            onSelect = function()
+            
+                onSelect = function()
                 playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
                 local options = {}
 
@@ -403,6 +491,7 @@ local function openPearlescentMenu()
                         lib.hideTextUI()
                         confirmPayment(GetVehicleNumberPlateText(cache.vehicle))
                     end,
+                    onBack = onBack,
                     options = options
                 })
 
@@ -416,6 +505,7 @@ local function openPearlescentMenu()
         title = locale("pearlescent_color_title"),
         menu = "colorMenu",
         onExit = onExit,
+        onBack = onBack,
         options = options
     })
 
@@ -428,7 +518,7 @@ local function openXenonMenu()
     local vehicle = cache.vehicle
     local colors = colors.xenon
     local vehiclePrice = getVehiclePrice(vehicle) or 50000
-
+    ToggleCamByPosition("left", vehicle)
     for i = 1, #colors, 1 do
         local disabled = false
 
@@ -449,7 +539,8 @@ local function openXenonMenu()
             iconColor = colors[i].iconColor,
             disabled = disabled,
             description = price .. "$",
-            onSelect = function()
+            
+                onSelect = function()
                 lib.setVehicleProperties(vehicle, { modXenon = true })
                 lib.setVehicleProperties(vehicle, { xenonColor = colors[i].index })
 
@@ -486,6 +577,7 @@ local function openXenonMenu()
                 iconColor = "#fff",
                 description = price .. "$",
                 disabled = not getVehicleProperties(cache.vehicle).modXenon,
+                
                 onSelect = function()
                     lib.setVehicleProperties(vehicle, { modXenon = false })
                     lib.setVehicleProperties(vehicle, { xenonColor = -1 })
@@ -524,9 +616,8 @@ local function openXenonMenu()
         id = 'xenonLights',
         title = locale("xenon_title"),
         menu = "cosmeticsMenu",
-        onBack = function()
-        end,
         onExit = onExit,
+        onBack = onBack,
         options = options
     })
 
@@ -544,12 +635,14 @@ local function openColorMenu()
         title = locale("color_title"),
         menu = "cosmeticsMenu",
         onExit = onExit,
+        onBack = onBack,
         options = {
             {
                 title = locale("primary_color_title"),
                 icon = mods.color.icon,
                 iconColor = "rgba(132, 0, 247, 1.0)",
                 description = price .. "$",
+                
                 onSelect = function()
                     local input = lib.inputDialog(locale("select_color"), {
                         { type = 'color', label = locale("color_input"), format = "rgb" },
@@ -623,6 +716,7 @@ local function openColorMenu()
                 icon = mods.color.icon,
                 iconColor = "rgba(244, 196, 48, 1.0)",
                 description = price .. "$",
+                
                 onSelect = function()
                     local input = lib.inputDialog(locale("select_color"), {
                         { type = 'color', label = locale("color_input"), format = "rgb" },
@@ -690,6 +784,7 @@ local function openColorMenu()
                 title = locale("pearlescent_color_title"),
                 icon = 'droplet',
                 iconColor = "rgba(236, 88, 0, 1.0)",
+                
                 onSelect = function()
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
                     openPearlescentMenu()
@@ -707,10 +802,8 @@ local function bodyPartsMenu()
         id = 'bodyPartsMenu',
         title = locale("cosmetics_title"),
         menu = "cosmeticsMenu",
-        onBack = function()
-
-        end,
         onExit = onExit,
+        onBack = onBack,
         options = {
             {
                 title = locale("spoiler_title"),
@@ -718,12 +811,14 @@ local function bodyPartsMenu()
                 iconColor = getVehicleColor(),
                 disabled = not (getVehicleModCounts(cache.vehicle, mods.modSpoilers.modNum) > 0),
                 description = tostring(getVehicleModCounts(cache.vehicle, mods.modSpoilers.modNum)),
+                
                 onSelect = function()
                     local vehicle = cache.vehicle
 
                     local mod = mods.modSpoilers.modNum
 
                     local mods = getVehicleModCounts(vehicle, mod)
+                    ToggleCamByPosition("back", vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -735,11 +830,13 @@ local function bodyPartsMenu()
                 iconColor = getVehicleColor(),
                 disabled = not (getVehicleModCounts(cache.vehicle, mods.modFrontBumper.modNum) > 0),
                 description = tostring(getVehicleModCounts(cache.vehicle, mods.modFrontBumper.modNum)),
+                
                 onSelect = function()
                     local vehicle = cache.vehicle
 
                     local mod = mods.modFrontBumper.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
+                    ToggleCamByPosition("front", cache.vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -751,11 +848,13 @@ local function bodyPartsMenu()
                 iconColor = getVehicleColor(),
                 disabled = not (getVehicleModCounts(cache.vehicle, mods.modRearBumper.modNum) > 0),
                 description = tostring(getVehicleModCounts(cache.vehicle, mods.modRearBumper.modNum)),
+                
                 onSelect = function()
                     local vehicle = cache.vehicle
 
                     local mod = mods.modRearBumper.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
+                    ToggleCamByPosition("back", cache.vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -767,11 +866,13 @@ local function bodyPartsMenu()
                 iconColor = getVehicleColor(),
                 disabled = not (getVehicleModCounts(cache.vehicle, mods.modSideSkirt.modNum) > 0),
                 description = tostring(getVehicleModCounts(cache.vehicle, mods.modSideSkirt.modNum)),
+                
                 onSelect = function()
                     local vehicle = cache.vehicle
 
                     local mod = mods.modSideSkirt.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
+                    ToggleCamByPosition("left", cache.vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -783,11 +884,13 @@ local function bodyPartsMenu()
                 disabled = not (getVehicleModCounts(cache.vehicle, mods.modExhaust.modNum) > 0),
                 iconColor = getVehicleColor(),
                 description = tostring(getVehicleModCounts(cache.vehicle, mods.modExhaust.modNum)),
+                
                 onSelect = function()
                     local vehicle = cache.vehicle
-
+                    SetVehicleEngineOn(vehicle, false, true, true)
                     local mod = mods.modExhaust.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
+                    ToggleCamByPosition("back", cache.vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -799,6 +902,7 @@ local function bodyPartsMenu()
                 iconColor = getVehicleColor(),
                 disabled = not (getVehicleModCounts(cache.vehicle, mods.modFrame.modNum) > 0),
                 description = tostring(getVehicleModCounts(cache.vehicle, mods.modFrame.modNum)),
+                
                 onSelect = function()
                     local vehicle = cache.vehicle
 
@@ -815,11 +919,13 @@ local function bodyPartsMenu()
                 iconColor = getVehicleColor(),
                 disabled = not (getVehicleModCounts(cache.vehicle, mods.modGrille.modNum) > 0),
                 description = tostring(getVehicleModCounts(cache.vehicle, mods.modGrille.modNum)),
+                
                 onSelect = function()
                     local vehicle = cache.vehicle
 
                     local mod = mods.modGrille.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
+                    ToggleCamByPosition("front", cache.vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -831,11 +937,13 @@ local function bodyPartsMenu()
                 iconColor = getVehicleColor(),
                 disabled = not (getVehicleModCounts(cache.vehicle, mods.modHood.modNum) > 0),
                 description = tostring(getVehicleModCounts(cache.vehicle, mods.modHood.modNum)),
+                
                 onSelect = function()
                     local vehicle = cache.vehicle
 
                     local mod = mods.modHood.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
+                    ToggleCamByPosition("front", cache.vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -847,11 +955,13 @@ local function bodyPartsMenu()
                 iconColor = getVehicleColor(),
                 disabled = not (getVehicleModCounts(cache.vehicle, mods.modFender.modNum) > 0),
                 description = tostring(getVehicleModCounts(cache.vehicle, mods.modFender.modNum)),
+                
                 onSelect = function()
                     local vehicle = cache.vehicle
 
                     local mod = mods.modFender.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
+                    ToggleCamByPosition("left", cache.vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -863,11 +973,13 @@ local function bodyPartsMenu()
                 iconColor = getVehicleColor(),
                 disabled = not (getVehicleModCounts(cache.vehicle, mods.modRightFender.modNum) > 0),
                 description = tostring(getVehicleModCounts(cache.vehicle, mods.modRightFender.modNum)),
+                
                 onSelect = function()
                     local vehicle = cache.vehicle
 
                     local mod = mods.modRightFender.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
+                    ToggleCamByPosition("right", cache.vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -879,12 +991,14 @@ local function bodyPartsMenu()
                 iconColor = getVehicleColor(),
                 disabled = not (getVehicleModCounts(cache.vehicle, mods.modRoof.modNum) > 0),
                 description = tostring(getVehicleModCounts(cache.vehicle, mods.modRoof.modNum)),
+                
                 onSelect = function()
                     local vehicle = cache.vehicle
 
                     local mod = mods.modRoof.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
-
+                    ToggleCamByPosition("top", vehicle)
+                    
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
                 end,
@@ -904,12 +1018,14 @@ local function windowTintMenu()
         title = locale("window_tint_title"),
         menu = "cosmeticsMenu",
         onExit = onExit,
+        onBack = onBack,
         options = {
             {
                 title = locale("tint_pure_black"),
                 icon = mods.windowTint.icon,
                 iconColor = getVehicleColor(),
                 disabled = getVehicleProperties(vehicle).windowTint == 1,
+                
                 onSelect = function()
                     local mod = 1
 
@@ -948,6 +1064,7 @@ local function windowTintMenu()
                 icon = mods.windowTint.icon,
                 iconColor = getVehicleColor(),
                 disabled = getVehicleProperties(vehicle).windowTint == 2,
+                
                 onSelect = function()
                     local mod = 2
 
@@ -987,6 +1104,7 @@ local function windowTintMenu()
                 icon = mods.windowTint.icon,
                 iconColor = getVehicleColor(),
                 disabled = getVehicleProperties(vehicle).windowTint == 3,
+                
                 onSelect = function()
                     local mod = 3
 
@@ -1027,6 +1145,7 @@ local function windowTintMenu()
                 icon = mods.windowTint.icon,
                 iconColor = getVehicleColor(),
                 disabled = getVehicleProperties(vehicle).windowTint == 4,
+                
                 onSelect = function()
                     local mod = 4
 
@@ -1065,6 +1184,7 @@ local function windowTintMenu()
                 icon = mods.windowTint.icon,
                 iconColor = getVehicleColor(),
                 disabled = getVehicleProperties(vehicle).windowTint == 5,
+                
                 onSelect = function()
                     local mod = 5
 
@@ -1107,18 +1227,21 @@ end
 local function platesColorMenu()
     local vehicle = cache.vehicle
     local vehiclePrice = getVehiclePrice(vehicle) or 50000
+    ToggleCamByPosition("back", vehicle)
 
     lib.registerContext({
         id = 'platesColorMenu',
         title = locale("plate_color_title"),
         menu = "cosmeticsMenu",
         onExit = onExit,
+        onBack = onBack,
         options = {
             {
                 title = locale("plate_blue_on_white1"),
                 icon = mods.plateIndex.icon,
                 iconColor = getVehicleColor(),
                 disabled = getVehicleProperties(vehicle).plateIndex == 0,
+                
                 onSelect = function()
                     local mod = 0
 
@@ -1160,6 +1283,7 @@ local function platesColorMenu()
                 icon = mods.plateIndex.icon,
                 iconColor = getVehicleColor(),
                 disabled = getVehicleProperties(vehicle).plateIndex == 1,
+                
                 onSelect = function()
                     local mod = 1
 
@@ -1203,6 +1327,7 @@ local function platesColorMenu()
                 icon = mods.plateIndex.icon,
                 iconColor = getVehicleColor(),
                 disabled = getVehicleProperties(vehicle).plateIndex == 2,
+                
                 onSelect = function()
                     local mod = 2
 
@@ -1246,6 +1371,7 @@ local function platesColorMenu()
                 icon = mods.plateIndex.icon,
                 iconColor = getVehicleColor(),
                 disabled = getVehicleProperties(vehicle).plateIndex == 3,
+                
                 onSelect = function()
                     local mod = 3
 
@@ -1289,6 +1415,7 @@ local function platesColorMenu()
                 icon = mods.plateIndex.icon,
                 iconColor = getVehicleColor(),
                 disabled = getVehicleProperties(vehicle).plateIndex == 4,
+                
                 onSelect = function()
                     local mod = 4
 
@@ -1349,7 +1476,8 @@ local function wheelColors()
             icon = 'paint-roller',
             iconColor = colors[i].color,
             description = price .. "$",
-            onSelect = function()
+            
+                onSelect = function()
                 playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
                 local options = {}
 
@@ -1365,6 +1493,7 @@ local function wheelColors()
                         icon = 'droplet',
                         iconColor = colors[i].colors[j].iconColor,
                         disabled = disabled,
+
                         onSelect = function()
                             lib.setVehicleProperties(vehicle, { wheelColor = colors[i].colors[j].index })
 
@@ -1405,6 +1534,7 @@ local function wheelColors()
                         lib.hideTextUI()
                         confirmPayment(GetVehicleNumberPlateText(cache.vehicle))
                     end,
+                    onBack = onBack,
                     options = options
                 })
 
@@ -1418,6 +1548,7 @@ local function wheelColors()
         title = locale("wheel_color_title"),
         menu = "wheelsMenu",
         onExit = onExit,
+        onBack = onBack,
         options = options
     })
     lib.showContext('wheelColorCategory')
@@ -1429,14 +1560,16 @@ local function openWheelsCategory()
         title = locale("wheel_type_title"),
         menu = "wheelsMenu",
         onExit = onExit,
+        onBack = onBack,
         options = {
             {
                 title = locale("wheel_type_sport"),
                 icon = "dharmachakra",
                 iconColor = getVehicleColor(),
+                
                 onSelect = function()
                     local vehicle = cache.vehicle
-                    lib.setVehicleProperties(vehicle, { wheels = 5 })
+                    lib.setVehicleProperties(vehicle, { wheels = 0 })
 
                     local mod = mods.modFrontWheel0.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
@@ -1449,6 +1582,7 @@ local function openWheelsCategory()
                 title = locale("wheel_type_muscle"),
                 icon = "dharmachakra",
                 iconColor = getVehicleColor(),
+                
                 onSelect = function()
                     local vehicle = cache.vehicle
                     lib.setVehicleProperties(vehicle, { wheels = 1 })
@@ -1464,6 +1598,7 @@ local function openWheelsCategory()
                 title = locale("wheel_type_lowrider"),
                 icon = "dharmachakra",
                 iconColor = getVehicleColor(),
+                
                 onSelect = function()
                     local vehicle = cache.vehicle
                     lib.setVehicleProperties(vehicle, { wheels = 2 })
@@ -1479,6 +1614,7 @@ local function openWheelsCategory()
                 title = locale("wheel_type_suv"),
                 icon = "dharmachakra",
                 iconColor = getVehicleColor(),
+                
                 onSelect = function()
                     local vehicle = cache.vehicle
                     lib.setVehicleProperties(vehicle, { wheels = 3 })
@@ -1494,6 +1630,7 @@ local function openWheelsCategory()
                 title = locale("wheel_type_offroad"),
                 icon = "dharmachakra",
                 iconColor = getVehicleColor(),
+                
                 onSelect = function()
                     local vehicle = cache.vehicle
                     lib.setVehicleProperties(vehicle, { wheels = 4 })
@@ -1509,6 +1646,7 @@ local function openWheelsCategory()
                 title = locale("wheel_type_tuner"),
                 icon = "dharmachakra",
                 iconColor = getVehicleColor(),
+                
                 onSelect = function()
                     local vehicle = cache.vehicle
                     lib.setVehicleProperties(vehicle, { wheels = 5 })
@@ -1524,6 +1662,7 @@ local function openWheelsCategory()
                 title = locale("wheel_type_bike"),
                 icon = "dharmachakra",
                 iconColor = getVehicleColor(),
+                
                 onSelect = function()
                     local vehicle = cache.vehicle
 
@@ -1540,11 +1679,92 @@ local function openWheelsCategory()
                 title = locale("wheel_type_highend"),
                 icon = "dharmachakra",
                 iconColor = getVehicleColor(),
+                
                 onSelect = function()
                     local vehicle = cache.vehicle
                     lib.setVehicleProperties(vehicle, { wheels = 7 })
 
                     local mod = mods.modFrontWheel7.modNum
+                    local mods = getVehicleModCounts(vehicle, mod)
+
+                    openModsMenu(vehicle, mod, mods)
+                    playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
+                end
+            },
+            {
+                title = "Bespoke",
+                icon = "dharmachakra",
+                iconColor = getVehicleColor(),
+                
+                onSelect = function()
+                    local vehicle = cache.vehicle
+                    lib.setVehicleProperties(vehicle, { wheels = 8 })
+
+                    local mod = mods.modFrontWheel8.modNum
+                    local mods = getVehicleModCounts(vehicle, mod)
+
+                    openModsMenu(vehicle, mod, mods)
+                    playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
+                end
+            },
+            {
+                title = "Bennys",
+                icon = "dharmachakra",
+                iconColor = getVehicleColor(),
+                
+                onSelect = function()
+                    local vehicle = cache.vehicle
+                    lib.setVehicleProperties(vehicle, { wheels = 9 })
+
+                    local mod = mods.modFrontWheel9.modNum
+                    local mods = getVehicleModCounts(vehicle, mod)
+
+                    openModsMenu(vehicle, mod, mods)
+                    playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
+                end
+            },
+            {
+                title = "OldSchool",
+                icon = "dharmachakra",
+                iconColor = getVehicleColor(),
+                
+                onSelect = function()
+                    local vehicle = cache.vehicle
+                    lib.setVehicleProperties(vehicle, { wheels = 10 })
+
+                    local mod = mods.modFrontWheel10.modNum
+                    local mods = getVehicleModCounts(vehicle, mod)
+
+                    openModsMenu(vehicle, mod, mods)
+                    playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
+                end
+            },
+            {
+                title = "Street",
+                icon = "dharmachakra",
+                iconColor = getVehicleColor(),
+                
+                onSelect = function()
+                    local vehicle = cache.vehicle
+                    lib.setVehicleProperties(vehicle, { wheels = 11 })
+
+                    local mod = mods.modFrontWheel11.modNum
+                    local mods = getVehicleModCounts(vehicle, mod)
+
+                    openModsMenu(vehicle, mod, mods)
+                    playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
+                end
+            },
+            {
+                title = "Track",
+                icon = "dharmachakra",
+                iconColor = getVehicleColor(),
+                
+                onSelect = function()
+                    local vehicle = cache.vehicle
+                    lib.setVehicleProperties(vehicle, { wheels = 12 })
+
+                    local mod = mods.modFrontWheel12.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
 
                     openModsMenu(vehicle, mod, mods)
@@ -1562,20 +1782,19 @@ local function openWheelsMenu()
     local vehiclePrice = getVehiclePrice(vehicle) or 50000
     local modPercentage = mods.wheelsColor.price / 100
     local price = vehiclePrice * modPercentage
-
+    ToggleCamByPosition("left", vehicle)
     lib.registerContext({
         id = 'wheelsMenu',
         title = locale("wheel_menu_title"),
         menu = "cosmeticsMenu",
-        onBack = function()
-
-        end,
         onExit = onExit,
+        onBack = onBack,
         options = {
             {
                 title = locale("wheel_color_title"),
                 icon = "brush",
                 iconColor = getVehicleColor(),
+                
                 onSelect = function()
                     wheelColors()
                 end
@@ -1585,6 +1804,7 @@ local function openWheelsMenu()
                 icon = "cloud",
                 iconColor = getVehicleColor(),
                 description = price .. "$",
+                
                 onSelect = function()
                     local input = lib.inputDialog(locale("select_color"), {
                         { type = 'color', label = locale("color_input"), format = "rgb" },
@@ -1635,6 +1855,7 @@ local function openWheelsMenu()
                 title = locale("wheel_type_title"),
                 icon = "dharmachakra",
                 iconColor = getVehicleColor(),
+                
                 onSelect = function()
                     openWheelsCategory()
                 end
@@ -1656,18 +1877,20 @@ local function openNeonMenu()
     local modPercentage = mods.neon.price / 100
 
     local price = vehiclePrice * modPercentage
-
+    ToggleCamByPosition("left", vehicle)
 
     lib.registerContext({
         id = 'neonMenu',
         title = locale("neon_title"),
         menu = "cosmeticsMenu",
         onExit = onExit,
+        onBack = onBack,
         options = {
             {
                 title = locale("disable_neon"),
                 disabled = disabled,
                 description = price .. "$",
+                
                 onSelect = function()
                     lib.setVehicleProperties(vehicle, { neonEnabled = { false, false, false, false } })
                     playSound('Zoom_In', 'DLC_HEIST_PLANNING_BOARD_SOUNDS')
@@ -1699,6 +1922,7 @@ local function openNeonMenu()
             {
                 title = locale("color_neon"),
                 description = price .. "$",
+                
                 onSelect = function()
                     local input = lib.inputDialog(locale("select_color"), {
                         { type = 'color', label = locale("color_input"), format = "rgb" },
@@ -1757,11 +1981,14 @@ local function openNeonMenu()
 end
 
 local function openEstethicsMenu()
+    ToggleCamByPosition("left", cache.vehicle)
+    
     lib.registerContext({
         id = 'cosmeticsMenu',
         title = locale("cosmetics_title"),
         menu = "tuningMenu",
         onExit = onExit,
+        onBack = onBack,
         options = {
             {
                 title = locale("color_title"),
@@ -1784,7 +2011,7 @@ local function openEstethicsMenu()
                 title = locale("neon_title"),
                 icon = 'lightbulb',
                 iconColor = getVehicleColor(),
-                onSelect = function()
+                onSelect = function()                    
                     openNeonMenu()
                 end,
             },
@@ -1793,6 +2020,7 @@ local function openEstethicsMenu()
                 icon = 'wrench',
                 iconColor = getVehicleColor(),
                 onSelect = function()
+
                     bodyPartsMenu()
                 end,
             },
@@ -1824,6 +2052,8 @@ local function openEstethicsMenu()
 
                     local mod = mods.modHorns.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
+                    SetVehicleDoorsShut(cache.vehicle, true)
+                    ToggleCamByPosition("left", vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -1849,7 +2079,9 @@ local function openEstethicsMenu()
 
                     local mod = mods.modPlateHolder.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
-
+                    SetVehicleDoorsShut(cache.vehicle, true)
+                    ToggleCamByPosition("back", vehicle)
+                    
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
                 end,
@@ -1865,6 +2097,8 @@ local function openEstethicsMenu()
 
                     local mod = mods.modVanityPlate.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
+                    SetVehicleDoorsShut(cache.vehicle, true)
+                    ToggleCamByPosition("front", vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -1881,6 +2115,8 @@ local function openEstethicsMenu()
 
                     local mod = mods.modTrimA.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
+                    SetVehicleDoorsShut(cache.vehicle, true)
+                    ToggleCamByPosition("inside-front", vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -1897,6 +2133,8 @@ local function openEstethicsMenu()
 
                     local mod = mods.modOrnaments.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
+                    SetVehicleDoorsShut(cache.vehicle, true)
+                    ToggleCamByPosition("inside-front", vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -1913,6 +2151,8 @@ local function openEstethicsMenu()
 
                     local mod = mods.modDashboard.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
+                    SetVehicleDoorsShut(cache.vehicle, true)
+                    ToggleCamByPosition("inside-front", vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -1929,6 +2169,8 @@ local function openEstethicsMenu()
 
                     local mod = mods.modDial.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
+                    SetVehicleDoorsShut(cache.vehicle, true)
+                    ToggleCamByPosition("left", vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -1945,6 +2187,8 @@ local function openEstethicsMenu()
 
                     local mod = mods.modDoorSpeaker.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
+                    OpenVehicleDoor("doors")
+                    ToggleCamByPosition("driverdoor", vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -1956,11 +2200,14 @@ local function openEstethicsMenu()
                 iconColor = getVehicleColor(),
                 disabled = not (getVehicleModCounts(cache.vehicle, mods.modSeats.modNum) > 0),
                 description = tostring(getVehicleModCounts(cache.vehicle, mods.modSeats.modNum)),
+                
                 onSelect = function()
                     local vehicle = cache.vehicle
 
                     local mod = mods.modSeats.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
+                    SetVehicleDoorsShut(cache.vehicle, true)
+                    ToggleCamByPosition("left", vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -1977,6 +2224,8 @@ local function openEstethicsMenu()
 
                     local mod = mods.modSteeringWheel.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
+                    SetVehicleDoorsShut(cache.vehicle, true)
+                    ToggleCamByPosition("steering", vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -1988,11 +2237,14 @@ local function openEstethicsMenu()
                 iconColor = getVehicleColor(),
                 disabled = not (getVehicleModCounts(cache.vehicle, mods.modShifterLeavers.modNum) > 0),
                 description = tostring(getVehicleModCounts(cache.vehicle, mods.modShifterLeavers.modNum)),
+                
                 onSelect = function()
                     local vehicle = cache.vehicle
 
                     local mod = mods.modShifterLeavers.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
+                    SetVehicleDoorsShut(cache.vehicle, true)
+                    ToggleCamByPosition("inside-front", vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -2009,6 +2261,8 @@ local function openEstethicsMenu()
 
                     local mod = mods.modAPlate.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
+                    SetVehicleDoorsShut(cache.vehicle, true)
+                    ToggleCamByPosition("left", vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -2020,11 +2274,14 @@ local function openEstethicsMenu()
                 iconColor = getVehicleColor(),
                 disabled = not (getVehicleModCounts(cache.vehicle, mods.modSpeakers.modNum) > 0),
                 description = tostring(getVehicleModCounts(cache.vehicle, mods.modSpeakers.modNum)),
+                
                 onSelect = function()
                     local vehicle = cache.vehicle
 
                     local mod = mods.modSpeakers.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
+                    --OpenVehicleDoor("doors")
+                    ToggleCamByPosition("back", vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -2041,6 +2298,8 @@ local function openEstethicsMenu()
 
                     local mod = mods.modTrunk.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
+                    OpenVehicleDoor("trunk")
+                    ToggleCamByPosition("back", vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -2052,11 +2311,14 @@ local function openEstethicsMenu()
                 iconColor = getVehicleColor(),
                 disabled = not (getVehicleModCounts(cache.vehicle, mods.modHydrolic.modNum) > 0),
                 description = tostring(getVehicleModCounts(cache.vehicle, mods.modHydrolic.modNum)),
+                
                 onSelect = function()
                     local vehicle = cache.vehicle
 
                     local mod = mods.modHydrolic.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
+                    SetVehicleDoorsShut(cache.vehicle, true)
+                    ToggleCamByPosition("left", vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -2073,6 +2335,8 @@ local function openEstethicsMenu()
 
                     local mod = mods.modEngineBlock.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
+                    OpenVehicleDoor("hood")
+                    ToggleCamByPosition("front", vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -2089,6 +2353,8 @@ local function openEstethicsMenu()
 
                     local mod = mods.modAirFilter.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
+                    OpenVehicleDoor("hood")
+                    ToggleCamByPosition("front", vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -2105,6 +2371,9 @@ local function openEstethicsMenu()
 
                     local mod = mods.modStruts.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
+                    SetVehicleDoorsShut(cache.vehicle, true)
+                    OpenVehicleDoor("hood")
+                    ToggleCamByPosition("front", vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -2121,6 +2390,8 @@ local function openEstethicsMenu()
 
                     local mod = mods.modArchCover.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
+                    SetVehicleDoorsShut(cache.vehicle, true)
+                    ToggleCamByPosition("left", vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -2137,6 +2408,8 @@ local function openEstethicsMenu()
 
                     local mod = mods.modAerials.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
+                    SetVehicleDoorsShut(cache.vehicle, true)
+                    ToggleCamByPosition("left", vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -2153,6 +2426,8 @@ local function openEstethicsMenu()
 
                     local mod = mods.modTrimB.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
+                    SetVehicleDoorsShut(cache.vehicle, true)
+                    ToggleCamByPosition("left", vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -2169,6 +2444,8 @@ local function openEstethicsMenu()
 
                     local mod = mods.modTank.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
+                    SetVehicleDoorsShut(cache.vehicle, true)
+                    ToggleCamByPosition("back", vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -2185,6 +2462,8 @@ local function openEstethicsMenu()
 
                     local mod = mods.modWindows.modNum
                     local mods = getVehicleModCounts(vehicle, mod)
+                    SetVehicleDoorsShut(cache.vehicle, true)
+                    ToggleCamByPosition("left", vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -2200,7 +2479,27 @@ local function openEstethicsMenu()
                     local vehicle = cache.vehicle
 
                     local mod = mods.modLivery.modNum
-                    local mods = getVehicleModCounts(vehicle, mod)
+                    local mods = getVehicleModCounts(cache.vehicle, mods.modLivery.modNum)
+                    SetVehicleDoorsShut(cache.vehicle, true)
+                    ToggleCamByPosition("left", vehicle)
+
+                    openModsMenu(vehicle, mod, mods)
+                    playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
+                end,
+            },
+            {
+                title = locale("extra_title"),
+                icon = mods.modLivery.icon or 'credit-card',
+                iconColor = getVehicleColor(),
+                disabled = not (GetVehicleLiveryCount(cache.vehicle) > 0),
+                description = tostring(GetVehicleLiveryCount(cache.vehicle)),
+                onSelect = function()
+                    local vehicle = cache.vehicle
+
+                    local mod = mods.modExtra.modNum
+                    local mods = GetVehicleLiveryCount(cache.vehicle)
+                    SetVehicleDoorsShut(cache.vehicle, true)
+                    ToggleCamByPosition("left", vehicle)
 
                     openModsMenu(vehicle, mod, mods)
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
@@ -2225,6 +2524,7 @@ function openTuningMenu()
         id = 'tuningMenu',
         title = locale("tuning_menu_title"),
         onExit = onExit,
+        onBack = onBack,
         options = {
             {
                 title = locale("cosmetics_title"),
@@ -2239,25 +2539,33 @@ function openTuningMenu()
                 title = locale("upgrade_category_title"),
                 description = locale("description_upgrades"),
                 icon = 'wrench',
+                disabled = isVehicleAllowedToUpgradePerf(),
                 onSelect = function()
                     openUpgradeMenu()
                     playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
                 end,
             },
+            {
+                title = "Prix",
+                description = "Voir le prix final",
+                icon = "money-bill",
+                onSelect = function()
+                    openShowPriceMenu()
+                    playSound('SELECT', 'HUD_FREEMODE_SOUNDSET')
+                end,
+            },
         }
     })
-
-    -- Setting the player cam position
-    local vehPos = GetEntityCoords(vehicle)
-    local camPos = GetOffsetFromEntityInWorldCoords(vehicle, -4.0, 0.0, 2.5)
-    local headingToObject = GetHeadingFromVector_2d(vehPos.x - camPos.x, vehPos.y - camPos.y)
-
-    cam = CreateCamWithParams('DEFAULT_SCRIPTED_CAMERA', camPos.x, camPos.y, camPos.z, -35.0, 0.0,
-        headingToObject, GetGameplayCamFov(), false, 2)
-
-
-    SetCamActive(cam, true)
-    RenderScriptCams(true, true, 600, true, true)
+	-- Setting the player cam position
+	local vehPos = GetEntityCoords(vehicle)
+	local camPos = GetOffsetFromEntityInWorldCoords(vehicle, -4.0, 0.0, 2.5)
+	local headingToObject = GetHeadingFromVector_2d(vehPos.x - camPos.x, vehPos.y - camPos.y)
+	
+	cam = CreateCamWithParams('DEFAULT_SCRIPTED_CAMERA', camPos.x, camPos.y, camPos.z, -35.0, 0.0,
+	headingToObject, GetGameplayCamFov(), false, 2)
+	
+	SetCamActive(cam, true)
+	RenderScriptCams(true, true, 600, true, true)
 
     lib.showContext('tuningMenu')
     showVehicleStats()
@@ -2270,4 +2578,12 @@ function onExit()
     RenderScriptCams(false, true, 600, true, true)
     DestroyCam(cam, true)
     FreezeEntityPosition(modifiyingvehicle, false)
+    SetVehicleDoorsShut(cache.vehicle, true)
+    SetVehicleEngineOn(cache.vehicle, true, true, true)
+end
+
+function onBack()
+    SetVehicleEngineOn(vehicle, true, true, true)
+    SetVehicleDoorsShut(cache.vehicle, true)
+    ToggleCamByPosition("left", cache.vehicle)
 end
