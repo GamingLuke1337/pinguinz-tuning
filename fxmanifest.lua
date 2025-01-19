@@ -21,6 +21,7 @@ server_scripts {
     "server/bridge/esx.lua",
     "server/bridge/ox.lua",
     "server/bridge/qb.lua",
+    "server/bridge/qbox.lua",
     "server/bridge/custom.lua",
 }
 
