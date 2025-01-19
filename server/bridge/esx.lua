@@ -94,6 +94,7 @@ lib.callback.register('ars_tuning:retreiveEsxVehicles', function(source, amount)
                 name = veh.name,
                 price = veh.price,
                 category = veh.category,
+                hash = joaat(veh.model),
             }
         end
     end

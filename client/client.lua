@@ -24,27 +24,26 @@ function CreateCustomLocations()
             coords = cfg.pos,
             distance = 8,
             onEnter = function(self)
-                if cache.vehicle and hasAccess(cfg.job) then
-                    lib.showTextUI("[E] - Accéder à l'atelier")
+                if cache.vehicle and hasAccess(cfg.job) and not LocalPlayer.state.isDead then
+                    lib.showTextUI(locale("access_workshop_msg"))
                 end
             end,
             onExit = function(self)
                 lib.hideTextUI()
-            end,
+                end,
             nearby = function(self)
                 if cache.vehicle and hasAccess(cfg.job) then
                     DrawMarker(36, self.coords.x, self.coords.y, self.coords.z, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, cfg.marker.scale.x, cfg.marker.scale.y, cfg.marker.scale.z,
                     cfg.marker.color.r, cfg.marker.color.b, cfg.marker.color.b, cfg.marker.color.alpha, false, true, 2, nil, nil, false)
-                    if self.currentDistance < 8.0 and IsControlJustReleased(0, 38) then
+                    if self.currentDistance < 8.0 and IsControlJustReleased(0, 38) and not LocalPlayer.state.isDead then
                         local vehicle = cache.vehicle
                         currentVehProperties.old = getVehicleProperties(vehicle)
-    
+                        
                         local color1_r, color1_g, color1_b = GetVehicleCustomPrimaryColour(vehicle)
                         currentVehProperties.old.color1 = { color1_r, color1_g, color1_b }
     
                         local color2_r, color2_g, color2_b = GetVehicleCustomSecondaryColour(vehicle)
-                        currentVehProperties.old.color2 = { color2_r, color2_g, color2_b }
-    
+                        currentVehProperties.old.color2 = { color2_r, color2_g, color2_b }                        
                         openTuningMenu()
                     end
                 end
